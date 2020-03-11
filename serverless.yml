@@ -1,0 +1,42 @@
+# Welcome to Serverless!
+service: myserverlessproject
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  profile: serverless-account
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: bennys-lambda-bucket
+      localDir: uploadData
+
+functions:
+  getUser:
+    handler: lambdas/getUser.handler
+    events:
+      - http:
+          path: get-user/{ID}
+          method: GET
+          cors: true
+
+resources:
+  Resources:
+    bucketUpload:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: bennys-lambda-bucket
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
